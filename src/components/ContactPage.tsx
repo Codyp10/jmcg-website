@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Calendar, Clock, MessageSquare, Send, Linkedin, Tw
 import { useRef, useState, useEffect } from 'react';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
+import { trackFormSubmission } from '../utils/analytics';
 
 export function ContactPage() {
   // Load the booking widget script
@@ -110,6 +111,8 @@ function ContactFormSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    // Track form submission
+    trackFormSubmission('contact');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

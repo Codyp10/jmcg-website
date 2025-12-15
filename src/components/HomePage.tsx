@@ -6,6 +6,7 @@ import { LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis } f
 import { MorphingTextShowcase } from './MorphingTextShowcase';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { ScrollIndicator } from './ScrollIndicator';
+import { trackCTAClick, trackExternalLink } from '../utils/analytics';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
@@ -100,7 +101,10 @@ export function HomePage({ onNavigate }: ServicesButtonProps) {
                   className="px-8 py-4 bg-[#EFA82F] text-white rounded-xl hover:bg-[#d89527] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#EFA82F]/30"
                   whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(239, 168, 47, 0.4)' }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => onNavigate('contact')}
+                  onClick={() => {
+                    trackCTAClick('Get Started', 'home');
+                    onNavigate('contact');
+                  }}
                 >
                   Get Started <ArrowRight size={20} />
                 </motion.button>
@@ -108,7 +112,10 @@ export function HomePage({ onNavigate }: ServicesButtonProps) {
                   className="px-8 py-4 bg-white text-gray-700 rounded-xl border-2 border-gray-200 hover:border-[#EFA82F] transition-colors flex items-center justify-center gap-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => window.open('https://www.youtube.com/@JohnsonMarketingandConsulting', '_blank')}
+                  onClick={() => {
+                    trackExternalLink('https://www.youtube.com/@JohnsonMarketingandConsulting', 'Watch Our Approach');
+                    window.open('https://www.youtube.com/@JohnsonMarketingandConsulting', '_blank');
+                  }}
                 >
                   <Play size={20} className="text-[#EFA82F]" /> Watch Our Approach
                 </motion.button>
@@ -653,7 +660,10 @@ function ServicesSection({ onNavigate }: ServicesButtonProps) {
             className="px-6 py-3 bg-[#EFA82F] text-white rounded-xl hover:bg-[#d89527] transition-colors flex items-center gap-2 mx-auto"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate('services')}
+            onClick={() => {
+              trackCTAClick('Explore All Services', 'home');
+              onNavigate('services');
+            }}
           >
             Explore All Services <ArrowRight size={18} />
           </motion.button>
@@ -798,7 +808,10 @@ function CTASection({ onNavigate }: ServicesButtonProps) {
             className="px-8 py-4 bg-white text-[#EFA82F] rounded-xl hover:bg-gray-100 transition-colors shadow-xl"
             whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate('contact')}
+            onClick={() => {
+              trackCTAClick('Schedule a Consultation', 'home-cta');
+              onNavigate('contact');
+            }}
           >
             Schedule a Consultation
           </motion.button>

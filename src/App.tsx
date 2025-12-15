@@ -6,12 +6,18 @@ import { HomePage } from './components/HomePage';
 import { AboutPage } from './components/AboutPage';
 import { ServicesPage } from './components/ServicesPage';
 import { ContactPage } from './components/ContactPage';
+import { trackPageView } from './utils/analytics';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [targetServiceId, setTargetServiceId] = useState<string | null>(null);
+
+  // Track initial page view
+  useEffect(() => {
+    trackPageView('/');
+  }, []);
 
   // Navigate to a page, optionally with a service section to scroll to
   const navigateToPage = (page: Page, serviceId?: string) => {
@@ -23,8 +29,19 @@ export default function App() {
     }
   };
 
-  // Scroll to top whenever the page changes, or to specific service section
+  // Track page views and scroll to top whenever the page changes, or to specific service section
   useEffect(() => {
+    // Map page names to paths for GA4
+    const pageMap: Record<Page, string> = {
+      home: '/',
+      about: '/about',
+      services: '/services',
+      contact: '/contact',
+    };
+    
+    // Track page view
+    trackPageView(pageMap[currentPage]);
+    
     console.log('Current page:', currentPage, 'Target service:', targetServiceId);
     
     if (targetServiceId && currentPage === 'services') {

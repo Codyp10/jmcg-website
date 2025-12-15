@@ -9,6 +9,7 @@ import { BusinessConsultingVisualization } from './BusinessConsultingVisualizati
 import { WebDevVisualization } from './WebDevVisualization';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
+import { trackCTAClick } from '../utils/analytics';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
@@ -486,7 +487,10 @@ function CTASection({ onNavigate }: ServicesPageProps = {}) {
             className="px-6 md:px-8 py-3 md:py-4 bg-[#EFA82F] text-white rounded-xl hover:bg-[#d89527] transition-colors shadow-lg text-sm md:text-base"
             whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(239, 168, 47, 0.3)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate?.('contact')}
+            onClick={() => {
+              trackCTAClick('Schedule Free Consultation', 'services-cta');
+              onNavigate?.('contact');
+            }}
           >
             Schedule Free Consultation
           </motion.button>
@@ -494,7 +498,10 @@ function CTASection({ onNavigate }: ServicesPageProps = {}) {
             className="px-6 md:px-8 py-3 md:py-4 bg-white text-gray-700 rounded-xl border-2 border-gray-200 hover:border-[#EFA82F] transition-colors text-sm md:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate?.('home')}
+            onClick={() => {
+              trackCTAClick('View Our Work', 'services-cta');
+              onNavigate?.('home');
+            }}
           >
             View Our Work
           </motion.button>
