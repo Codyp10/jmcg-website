@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { trackFormSubmission } from '../utils/analytics';
+import { Seo } from './Seo';
 
 export function ContactPage() {
   // Load the booking widget script
@@ -22,6 +23,10 @@ export function ContactPage() {
 
   return (
     <div>
+      <Seo
+        title="Contact Johnson Marketing and Consulting Group | Schedule a Marketing & Growth Consultation"
+        description="Contact Johnson Marketing and Consulting Group to schedule a no-pressure marketing and business growth consultation. Talk with our team about web, SEO, GEO, ads, and consulting support for your brand."
+      />
       <HeroSection />
       <ContactFormSection />
       <FAQSection />

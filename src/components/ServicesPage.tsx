@@ -10,6 +10,7 @@ import { WebDevVisualization } from './WebDevVisualization';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { trackCTAClick } from '../utils/analytics';
+import { Seo } from './Seo';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
@@ -87,6 +88,10 @@ export function ServicesPage({ onNavigate }: ServicesPageProps = {}) {
 
   return (
     <div>
+      <Seo
+        title="Marketing Services | Web Development, SEO, GEO, Ads & Consulting – Johnson Marketing and Consulting Group"
+        description="Explore Johnson Marketing and Consulting Group’s full-stack marketing services, including web development, SEO, GEO, Google Ads, Meta Ads, podcast production, and business consulting built for scalable growth."
+      />
       <HeroSection />
       <ServicesGridSection services={services} onNavigate={onNavigate} />
       {services.map((service, idx) => (

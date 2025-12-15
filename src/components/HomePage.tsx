@@ -7,6 +7,7 @@ import { MorphingTextShowcase } from './MorphingTextShowcase';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { ScrollIndicator } from './ScrollIndicator';
 import { trackCTAClick, trackExternalLink } from '../utils/analytics';
+import { Seo } from './Seo';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
@@ -28,6 +29,10 @@ export function HomePage({ onNavigate }: ServicesButtonProps) {
 
   return (
     <div>
+      <Seo
+        title="Johnson Marketing and Consulting Group | Web Design, SEO, GEO & Growth Consulting"
+        description="Johnson Marketing and Consulting Group builds high-converting websites and full-funnel marketing systems with web development, SEO, GEO, Google Ads, Meta Ads, and business consulting for growth-focused brands."
+      />
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-gray-50 via-white to-orange-50 pt-8 md:pt-0">
         {/* Animated Background Elements - Disabled on mobile for performance */}

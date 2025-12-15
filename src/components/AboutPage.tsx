@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
+import { Seo } from './Seo';
 
 type Page = 'home' | 'about' | 'services' | 'contact';
 
@@ -14,6 +15,10 @@ interface AboutPageProps {
 export function AboutPage({ onNavigate }: AboutPageProps = {}) {
   return (
     <div>
+      <Seo
+        title="About Johnson Marketing and Consulting Group | Strategic Marketing & Business Growth Partner"
+        description="Learn how Johnson Marketing and Consulting Group combines modern marketing, SEO, GEO, ads, and business consulting to become a long-term growth partner for ambitious, national brands."
+      />
       <HeroSection />
       <StorySection />
       <MissionValuesSection />
