@@ -1,6 +1,7 @@
 import { motion, useInView } from 'motion/react';
 import { Search, Sparkles, Code, Palette, Mic, MousePointerClick, Target, Users, ArrowRight, CheckCircle, User, Bot, X, Minus, Maximize2, RotateCw, Lock, ChevronLeft, ChevronRight, ShoppingCart, Menu, Star } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GraphicDesignVisualization } from './GraphicDesignVisualization';
 import { PodcastVisualization } from './PodcastVisualization';
 import { GooglePPCVisualization } from './GooglePPCVisualization';
@@ -12,13 +13,27 @@ import { useIsMobile } from '../hooks/useMediaQuery';
 import { trackCTAClick } from '../utils/analytics';
 import { Seo } from './Seo';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
+export function ServicesPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-interface ServicesPageProps {
-  onNavigate?: (page: Page, serviceId?: string) => void;
-}
-
-export function ServicesPage({ onNavigate }: ServicesPageProps = {}) {
+  // Handle hash-based scrolling when component mounts or hash changes
+  useEffect(() => {
+    if (location.hash) {
+      // Remove the # from the hash
+      const hash = location.hash.substring(1);
+      
+      // Wait for page to render, then scroll to element
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          const yOffset = -100; // Account for fixed header
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
   const services = [
     {
       icon: Sparkles,
@@ -93,12 +108,12 @@ export function ServicesPage({ onNavigate }: ServicesPageProps = {}) {
         description="Explore Johnson Marketing and Consulting Group’s full-stack marketing services, including web development, SEO, GEO, Google Ads, Meta Ads, podcast production, and business consulting built for scalable growth."
       />
       <HeroSection />
-      <ServicesGridSection services={services} onNavigate={onNavigate} />
+      <ServicesGridSection services={services} />
       {services.map((service, idx) => (
         <ServiceDetailSection key={idx} service={service} index={idx} />
       ))}
       <ProcessSection />
-      <CTASection onNavigate={onNavigate} />
+      <CTASection />
     </div>
   );
 }
@@ -168,9 +183,10 @@ function HeroSection() {
   );
 }
 
-function ServicesGridSection({ services, onNavigate }: { services: any[]; onNavigate?: (page: Page, serviceId?: string) => void }) {
+function ServicesGridSection({ services }: { services: any[] }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+  const navigate = useNavigate();
 
   // Helper function to convert service name to section ID
   const getServiceId = (serviceName: string) => {
@@ -180,12 +196,17 @@ function ServicesGridSection({ services, onNavigate }: { services: any[]; onNavi
   // Handle click to scroll to service section on same page
   const handleServiceClick = (service: any) => {
     const sectionId = getServiceId(service.shortName);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const yOffset = -100;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    // Update URL with hash
+    navigate(`/services#${sectionId}`, { replace: true });
+    // Scroll to element
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const yOffset = -100;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   return (
@@ -459,7 +480,8 @@ function ProcessSection() {
   );
 }
 
-function CTASection({ onNavigate }: ServicesPageProps = {}) {
+function CTASection() {
+  const navigate = useNavigate();
   return (
     <section className="py-12 md:py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -494,7 +516,7 @@ function CTASection({ onNavigate }: ServicesPageProps = {}) {
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               trackCTAClick('Schedule Free Consultation', 'services-cta');
-              onNavigate?.('contact');
+              navigate('/contact');
             }}
           >
             Schedule Free Consultation
@@ -505,7 +527,7 @@ function CTASection({ onNavigate }: ServicesPageProps = {}) {
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               trackCTAClick('View Our Work', 'services-cta');
-              onNavigate?.('home');
+              navigate('/');
             }}
           >
             View Our Work

@@ -1,31 +1,31 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import logo from 'figma:asset/d18e64897d799e5d5096e61c7df4c2f2de01828f.png';
 import { useIsMobile } from '../hooks/useMediaQuery';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
+const navItems: { label: string; path: string }[] = [
+  { label: 'Home', path: '/' },
+  { label: 'About', path: '/about' },
+  { label: 'Services', path: '/services' },
+  { label: 'Contact', path: '/contact' },
+];
 
-interface NavigationProps {
-  currentPage: Page;
-  onNavigate: (page: Page) => void;
-}
-
-export function Navigation({ currentPage, onNavigate }: NavigationProps) {
+export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const location = useLocation();
 
-  const navItems: { label: string; page: Page }[] = [
-    { label: 'Home', page: 'home' },
-    { label: 'About', page: 'about' },
-    { label: 'Services', page: 'services' },
-    { label: 'Contact', page: 'contact' },
-  ];
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
 
-  const handleNavigate = (page: Page) => {
-    onNavigate(page);
+  const handleLinkClick = () => {
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -38,12 +38,7 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <motion.button 
-            onClick={() => handleNavigate('home')}
-            className="flex items-center gap-3 group"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <Link to="/" className="flex items-center gap-3 group">
             <motion.img 
               src={logo}
               alt="JMCG Logo"
@@ -55,40 +50,46 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
               <div className="text-xl text-gray-900">Johnson Marketing</div>
               <div className="text-xs text-gray-500 -mt-1">& Consulting Group</div>
             </div>
-          </motion.button>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
             {navItems.map((item) => (
-              <motion.button
-                key={item.page}
-                onClick={() => handleNavigate(item.page)}
+              <Link
+                key={item.path}
+                to={item.path}
                 className={`px-6 py-2 rounded-lg transition-colors relative ${
-                  currentPage === item.page
+                  isActive(item.path)
                     ? 'text-[#EFA82F]'
                     : 'text-gray-700 hover:text-[#EFA82F]'
                 }`}
-                whileHover={{ scale: 1.05 }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {item.label}
+                  {isActive(item.path) && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#EFA82F]"
+                      layoutId="activeNav"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </motion.div>
+              </Link>
+            ))}
+            <Link
+              to="/contact"
+              className="ml-4 px-6 py-2 bg-[#EFA82F] text-white rounded-lg hover:bg-[#d89527] transition-colors"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05, boxShadow: '0 10px 25px rgba(239, 168, 47, 0.3)' }}
                 whileTap={{ scale: 0.95 }}
               >
-                {item.label}
-                {currentPage === item.page && (
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#EFA82F]"
-                    layoutId="activeNav"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </motion.button>
-            ))}
-            <motion.button
-              className="ml-4 px-6 py-2 bg-[#EFA82F] text-white rounded-lg hover:bg-[#d89527] transition-colors"
-              whileHover={{ scale: 1.05, boxShadow: '0 10px 25px rgba(239, 168, 47, 0.3)' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleNavigate('contact')}
-            >
-              Get Started
-            </motion.button>
+                Get Started
+              </motion.div>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -112,21 +113,25 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
               transition={{ duration: 0.3 }}
             >
               {navItems.map((item, idx) => (
-                <motion.button
-                  key={item.page}
-                  onClick={() => handleNavigate(item.page)}
-                  className={`w-full text-left px-4 py-3 rounded-lg mb-2 transition-colors ${
-                    currentPage === item.page
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={handleLinkClick}
+                  className={`block w-full text-left px-4 py-3 rounded-lg mb-2 transition-colors ${
+                    isActive(item.path)
                       ? 'bg-[#EFA82F] text-white'
                       : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  whileTap={{ scale: 0.98 }}
                 >
-                  {item.label}
-                </motion.button>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {item.label}
+                  </motion.div>
+                </Link>
               ))}
             </motion.div>
           )}

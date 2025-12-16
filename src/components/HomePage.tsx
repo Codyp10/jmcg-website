@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform, useInView } from 'motion/react';
 import { ArrowRight, Play, Sparkles, TrendingUp, Target, Users, CheckCircle, Zap, DollarSign, MousePointerClick, ShoppingCart } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { MorphingTextShowcase } from './MorphingTextShowcase';
@@ -9,13 +10,8 @@ import { ScrollIndicator } from './ScrollIndicator';
 import { trackCTAClick, trackExternalLink } from '../utils/analytics';
 import { Seo } from './Seo';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
-
-interface ServicesButtonProps {
-  onNavigate: (page: Page, serviceId?: string) => void;
-}
-
-export function HomePage({ onNavigate }: ServicesButtonProps) {
+export function HomePage() {
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -108,7 +104,7 @@ export function HomePage({ onNavigate }: ServicesButtonProps) {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     trackCTAClick('Get Started', 'home');
-                    onNavigate('contact');
+                    navigate('/contact');
                   }}
                 >
                   Get Started <ArrowRight size={20} />
@@ -154,13 +150,13 @@ export function HomePage({ onNavigate }: ServicesButtonProps) {
       <ClientWorkSection />
 
       {/* Services Overview */}
-      <ServicesSection onNavigate={onNavigate} />
+      <ServicesSection />
 
       {/* Stats Section */}
       <StatsSection />
 
       {/* CTA Section */}
-      <CTASection onNavigate={onNavigate} />
+      <CTASection />
     </div>
   );
 }
@@ -380,7 +376,8 @@ function ClientWorkSection() {
   );
 }
 
-function ServicesSection({ onNavigate }: ServicesButtonProps) {
+function ServicesSection() {
+  const navigate = useNavigate();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -566,7 +563,7 @@ function ServicesSection({ onNavigate }: ServicesButtonProps) {
                 <motion.div
                   className={`relative h-full bg-gradient-to-br ${service.color} rounded-2xl p-8 shadow-lg overflow-hidden cursor-pointer group`}
                   whileHover={{ scale: 1.02, y: -5 }}
-                  onClick={() => onNavigate('services', getServiceId(service.name))}
+                  onClick={() => navigate(`/services#${getServiceId(service.name)}`)}
                 >
                   {/* Animated background pattern - Disabled on mobile for performance */}
                   {!isMobile && (
@@ -667,7 +664,7 @@ function ServicesSection({ onNavigate }: ServicesButtonProps) {
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               trackCTAClick('Explore All Services', 'home');
-              onNavigate('services');
+              navigate('/services');
             }}
           >
             Explore All Services <ArrowRight size={18} />
@@ -757,7 +754,8 @@ function StatsSection() {
   );
 }
 
-function CTASection({ onNavigate }: ServicesButtonProps) {
+function CTASection() {
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   
   return (
@@ -815,7 +813,7 @@ function CTASection({ onNavigate }: ServicesButtonProps) {
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               trackCTAClick('Schedule a Consultation', 'home-cta');
-              onNavigate('contact');
+              navigate('/contact');
             }}
           >
             Schedule a Consultation

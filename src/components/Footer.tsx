@@ -1,19 +1,16 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Phone, Linkedin, Youtube, Instagram, Facebook } from 'lucide-react';
 import logo from 'figma:asset/d18e64897d799e5d5096e61c7df4c2f2de01828f.png';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
+const footerLinks = [
+  { label: 'Home', path: '/' },
+  { label: 'About', path: '/about' },
+  { label: 'Services', path: '/services' },
+  { label: 'Contact', path: '/contact' },
+];
 
-interface FooterProps {
-  onNavigate: (page: Page) => void;
-}
-
-export function Footer({ onNavigate }: FooterProps) {
-  const handleNavigate = (page: Page) => {
-    onNavigate(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+export function Footer() {
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white border-t-4 border-[#EFA82F]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -44,15 +41,16 @@ export function Footer({ onNavigate }: FooterProps) {
           >
             <h4 className="text-lg mb-4">Quick Links</h4>
             <div className="space-y-2">
-              {['Home', 'About', 'Services', 'Contact'].map((item) => (
-                <motion.button
-                  key={item}
-                  onClick={() => handleNavigate(item.toLowerCase() as Page)}
+              {footerLinks.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
                   className="block text-gray-400 hover:text-[#EFA82F] transition-colors"
-                  whileHover={{ x: 5 }}
                 >
-                  {item}
-                </motion.button>
+                  <motion.div whileHover={{ x: 5 }}>
+                    {item.label}
+                  </motion.div>
+                </Link>
               ))}
             </div>
           </motion.div>

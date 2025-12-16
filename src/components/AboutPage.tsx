@@ -1,18 +1,13 @@
 import { motion, useInView } from 'motion/react';
 import { Award, Target, Users, TrendingUp, Heart, Lightbulb, Shield, Zap } from 'lucide-react';
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { Seo } from './Seo';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
-
-interface AboutPageProps {
-  onNavigate?: (page: Page) => void;
-}
-
-export function AboutPage({ onNavigate }: AboutPageProps = {}) {
+export function AboutPage() {
   return (
     <div>
       <Seo
@@ -23,7 +18,7 @@ export function AboutPage({ onNavigate }: AboutPageProps = {}) {
       <StorySection />
       <MissionValuesSection />
       <TeamSection />
-      <StatsSection onNavigate={onNavigate} />
+      <StatsSection />
     </div>
   );
 }
@@ -318,7 +313,8 @@ function TeamSection() {
   );
 }
 
-function StatsSection({ onNavigate }: AboutPageProps = {}) {
+function StatsSection() {
+  const navigate = useNavigate();
   return (
     <section className="py-24 bg-white relative overflow-hidden">
       {/* Animated Background */}
@@ -365,7 +361,7 @@ function StatsSection({ onNavigate }: AboutPageProps = {}) {
           transition={{ delay: 0.2 }}
           whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(239, 168, 47, 0.3)' }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => onNavigate?.('contact')}
+          onClick={() => navigate('/contact')}
         >
           Let's Talk About Your Business
         </motion.button>

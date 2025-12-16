@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Navigation } from './components/Navigation';
 import { Footer } from './components/Footer';
@@ -8,85 +9,22 @@ import { ServicesPage } from './components/ServicesPage';
 import { ContactPage } from './components/ContactPage';
 import { trackPageView } from './utils/analytics';
 
-type Page = 'home' | 'about' | 'services' | 'contact';
+function AppContent() {
+  const location = useLocation();
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [targetServiceId, setTargetServiceId] = useState<string | null>(null);
-
-  // Track initial page view
+  // Track page views on route change
   useEffect(() => {
-    trackPageView('/');
-  }, []);
-
-  // Navigate to a page, optionally with a service section to scroll to
-  const navigateToPage = (page: Page, serviceId?: string) => {
-    setCurrentPage(page);
-    if (serviceId) {
-      setTargetServiceId(serviceId);
-    } else {
-      setTargetServiceId(null);
-    }
-  };
-
-  // Track page views and scroll to top whenever the page changes, or to specific service section
-  useEffect(() => {
-    // Map page names to paths for GA4
-    const pageMap: Record<Page, string> = {
-      home: '/',
-      about: '/about',
-      services: '/services',
-      contact: '/contact',
-    };
+    trackPageView(location.pathname);
     
-    // Track page view
-    trackPageView(pageMap[currentPage]);
-    
-    console.log('Current page:', currentPage, 'Target service:', targetServiceId);
-    
-    if (targetServiceId && currentPage === 'services') {
-      // When navigating to a specific service, DON'T scroll to top first
-      // Wait for page transition and rendering
-      setTimeout(() => {
-        const element = document.getElementById(targetServiceId);
-        console.log('Looking for element with ID:', targetServiceId, 'Found:', element);
-        if (element) {
-          // Add offset to account for fixed header if needed
-          const yOffset = -100; // Adjust this value as needed
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-          // Clear after scrolling completes
-          setTimeout(() => setTargetServiceId(null), 1000);
-        } else {
-          console.error('Element not found with ID:', targetServiceId);
-          setTargetServiceId(null);
-        }
-      }, 600);
-    } else if (!targetServiceId) {
-      // For contact page, scroll to top instantly for better UX
-      // For other pages, smooth scroll
-      if (currentPage === 'contact') {
+    // Scroll to top on route change (unless there's a hash)
+    if (!location.hash) {
+      if (location.pathname === '/contact') {
         window.scrollTo({ top: 0, behavior: 'instant' });
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
-  }, [currentPage]);
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <HomePage onNavigate={navigateToPage} />;
-      case 'about':
-        return <AboutPage onNavigate={navigateToPage} />;
-      case 'services':
-        return <ServicesPage onNavigate={navigateToPage} />;
-      case 'contact':
-        return <ContactPage />;
-      default:
-        return <HomePage onNavigate={navigateToPage} />;
-    }
-  };
+  }, [location.pathname, location.hash]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -96,22 +34,31 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col overflow-x-hidden">
-      <Navigation currentPage={currentPage} onNavigate={navigateToPage} />
+      <Navigation />
       <main className="flex-1 overflow-x-hidden">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentPage}
+            key={location.pathname}
             initial="initial"
             animate="animate"
             exit="exit"
             variants={pageVariants}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
           >
-            {renderPage()}
+            <Routes location={location}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+            </Routes>
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer onNavigate={navigateToPage} />
+      <Footer />
     </div>
   );
+}
+
+export default function App() {
+  return <AppContent />;
 }
