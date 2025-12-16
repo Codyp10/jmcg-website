@@ -269,7 +269,7 @@ function TeamSection() {
   const team = [
     { name: 'Caleb Johnson', role: 'Founder & CEO', image: 'https://ik.imagekit.io/jmcg/website%20headshots/caleb.png' },
     { name: 'Cody Perkins', role: 'CTO', image: 'https://ik.imagekit.io/jmcg/website%20headshots/cody.png' },
-    { name: 'Skyla Godlove', role: 'Director of UX/UI', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdHxlbnwxfHx8fDE3NjQ4Mjk2MDd8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+    { name: 'Skyla Godlove', role: 'Director of UX/UI', image: 'https://ik.imagekit.io/jmcg/website%20headshots/skyla.png' },
     { name: 'Jacob Ritter', role: 'Business Associate', image: 'https://ik.imagekit.io/jmcg/jacob.PNG' },
   ];
 
