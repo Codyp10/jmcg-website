@@ -1,5 +1,5 @@
 
-  # Marketing Website Design
+  # Johnson Marketing and Consulting Group
 
   This is a code bundle for Marketing Website Design. The original project is available at https://www.figma.com/design/faQa1Rl7Amh5UGNlkjJbGF/Marketing-Website-Design.
 
