@@ -36,7 +36,8 @@ export function Seo({ title, description }: SeoProps) {
     const url = typeof window !== 'undefined' ? window.location.href : '';
     const defaultImage = '/apple-touch-icon.png';
 
-    ensureOgTag('og:title', fullTitle);
+    // Use consistent brand title for social sharing
+    ensureOgTag('og:title', 'Johnson Marketing and Consulting Group');
     ensureOgTag('og:description', description);
     ensureOgTag('og:type', 'website');
     ensureOgTag('og:url', url);
