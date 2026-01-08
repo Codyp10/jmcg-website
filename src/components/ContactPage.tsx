@@ -1,10 +1,11 @@
 import { motion, useInView } from 'motion/react';
-import { Mail, Phone, MapPin, Calendar, Clock, MessageSquare, Send, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, Clock, MessageSquare, Send, Linkedin, Twitter, Instagram, Facebook, CheckCircle } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { ScrollIndicator } from './ScrollIndicator';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { trackFormSubmission } from '../utils/analytics';
 import { Seo } from './Seo';
+import { useForm, ValidationError } from '@formspree/react';
 
 export function ContactPage() {
   // Load the booking widget script
@@ -102,27 +103,14 @@ function HeroSection() {
 function ContactFormSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    company: '',
-    services: '',
-    message: '',
-    budget: '',
-  });
+  const [state, handleSubmit] = useForm("mdakqvnd");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Track form submission
-    trackFormSubmission('contact');
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Track successful form submission
+  useEffect(() => {
+    if (state.succeeded) {
+      trackFormSubmission('contact');
+    }
+  }, [state.succeeded]);
 
   return (
     <section ref={ref} className="py-24 bg-white">
@@ -137,77 +125,99 @@ function ContactFormSection() {
             <h2 className="text-3xl md:text-4xl text-gray-900 mb-2">Send Us a Message</h2>
             <p className="text-gray-600 mb-8">We'll get back to you within 24 hours</p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {state.succeeded ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-2xl p-8 text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6"
+                >
+                  <CheckCircle className="text-white" size={48} />
+                </motion.div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Thank You!</h3>
+                <p className="text-gray-700 text-lg mb-4">
+                  Your message has been successfully sent. We'll get back to you within 24 hours.
+                </p>
+                <p className="text-gray-600">
+                  In the meantime, feel free to schedule a consultation using the booking widget →
+                </p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Fields */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <motion.div whileFocus={{ scale: 1.02 }}>
-                  <label className="block text-sm text-gray-700 mb-2">First Name *</label>
+                  <label htmlFor="firstName" className="block text-sm text-gray-700 mb-2">First Name *</label>
                   <input
+                    id="firstName"
                     type="text"
                     name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
                     className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                     required
                   />
+                  <ValidationError prefix="First Name" field="firstName" errors={state.errors} />
                 </motion.div>
                 <motion.div whileFocus={{ scale: 1.02 }}>
-                  <label className="block text-sm text-gray-700 mb-2">Last Name *</label>
+                  <label htmlFor="lastName" className="block text-sm text-gray-700 mb-2">Last Name *</label>
                   <input
+                    id="lastName"
                     type="text"
                     name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
                     className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                     required
                   />
+                  <ValidationError prefix="Last Name" field="lastName" errors={state.errors} />
                 </motion.div>
               </div>
 
               {/* Email */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Email *</label>
+                <label htmlFor="email" className="block text-sm text-gray-700 mb-2">Email *</label>
                 <input
+                  id="email"
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                   required
                 />
+                <ValidationError prefix="Email" field="email" errors={state.errors} />
               </motion.div>
 
               {/* Phone */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Phone Number</label>
+                <label htmlFor="phone" className="block text-sm text-gray-700 mb-2">Phone Number</label>
                 <input
+                  id="phone"
                   type="tel"
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                 />
+                <ValidationError prefix="Phone" field="phone" errors={state.errors} />
               </motion.div>
 
               {/* Company */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Company Name</label>
+                <label htmlFor="company" className="block text-sm text-gray-700 mb-2">Company Name</label>
                 <input
+                  id="company"
                   type="text"
                   name="company"
-                  value={formData.company}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                 />
+                <ValidationError prefix="Company" field="company" errors={state.errors} />
               </motion.div>
 
               {/* Services */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Services Interested In</label>
+                <label htmlFor="services" className="block text-sm text-gray-700 mb-2">Services Interested In</label>
                 <select
+                  id="services"
                   name="services"
-                  value={formData.services}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                 >
                   <option value="">Select a service...</option>
@@ -221,28 +231,28 @@ function ContactFormSection() {
                   <option value="consulting">Business Consulting</option>
                   <option value="multiple">Multiple Services</option>
                 </select>
+                <ValidationError prefix="Services" field="services" errors={state.errors} />
               </motion.div>
 
               {/* Message */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Tell us about your business challenges *</label>
+                <label htmlFor="message" className="block text-sm text-gray-700 mb-2">Tell us about your business challenges *</label>
                 <textarea
+                  id="message"
                   name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   rows={5}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors resize-none"
                   required
                 />
+                <ValidationError prefix="Message" field="message" errors={state.errors} />
               </motion.div>
 
               {/* Budget */}
               <motion.div whileFocus={{ scale: 1.02 }}>
-                <label className="block text-sm text-gray-700 mb-2">Budget Range (Optional)</label>
+                <label htmlFor="budget" className="block text-sm text-gray-700 mb-2">Budget Range (Optional)</label>
                 <select
+                  id="budget"
                   name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#EFA82F] focus:outline-none transition-colors"
                 >
                   <option value="">Select a range...</option>
@@ -251,23 +261,39 @@ function ContactFormSection() {
                   <option value="10-20k">$10,000 - $20,000/mo</option>
                   <option value="20k+">$20,000+/mo</option>
                 </select>
+                <ValidationError prefix="Budget" field="budget" errors={state.errors} />
               </motion.div>
 
               {/* Submit Button */}
               <motion.button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-[#EFA82F] to-[#d89527] text-white rounded-xl hover:from-[#d89527] hover:to-[#EFA82F] transition-all shadow-lg flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(239, 168, 47, 0.3)' }}
-                whileTap={{ scale: 0.98 }}
+                disabled={state.submitting}
+                className="w-full py-4 bg-gradient-to-r from-[#EFA82F] to-[#d89527] text-white rounded-xl hover:from-[#d89527] hover:to-[#EFA82F] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={!state.submitting ? { scale: 1.02, boxShadow: '0 20px 40px rgba(239, 168, 47, 0.3)' } : {}}
+                whileTap={!state.submitting ? { scale: 0.98 } : {}}
               >
-                <Send size={20} />
-                Send Message
+                {state.submitting ? (
+                  <>
+                    <motion.div
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} />
+                    Send Message
+                  </>
+                )}
               </motion.button>
 
               <p className="text-sm text-gray-500 text-center">
                 We'll respond within 24 hours during business days
               </p>
             </form>
+            )}
           </motion.div>
 
           {/* Contact Info & Calendar */}
