@@ -265,7 +265,6 @@ function TeamSection() {
     { name: 'Caleb Johnson', role: 'Founder & CEO', image: 'https://ik.imagekit.io/jmcg/website%20headshots/caleb.png' },
     { name: 'Cody Perkins', role: 'CTO', image: 'https://ik.imagekit.io/jmcg/website%20headshots/cody.png' },
     { name: 'Skyla Godlove', role: 'Director of UX/UI', image: 'https://ik.imagekit.io/jmcg/website%20headshots/skyla.png' },
-    { name: 'Jacob Ritter', role: 'Business Associate', image: 'https://ik.imagekit.io/jmcg/jacob.PNG' },
   ];
 
   return (
@@ -282,7 +281,7 @@ function TeamSection() {
           <p className="text-xl text-gray-600">The people behind your success</p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {team.map((member, idx) => (
             <motion.div
               key={idx}
